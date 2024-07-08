@@ -1,3 +1,6 @@
+import { useState, useEffect } from "react";
+import { debounce } from "lodash";
+import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -20,11 +23,35 @@ const navItems = [
 ];
 
 const Layout = () => {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+
+  const handleSearch = debounce(async (query) => {
+    if (query.length > 0) {
+      // Mock API call
+      const products = [
+        { id: 1, name: "Laptop" },
+        { id: 2, name: "Smartphone" },
+        { id: 3, name: "Headphones" },
+      ];
+      const results = products.filter((product) =>
+        product.name.toLowerCase().includes(query.toLowerCase())
+      );
+      setSearchResults(results);
+    } else {
+      setSearchResults([]);
+    }
+  }, 300);
+
+  useEffect(() => {
+    handleSearch(searchQuery);
+  }, [searchQuery]);
+
   return (
     <div className="flex min-h-screen w-full flex-col">
       <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6 justify-between">
-        <DesktopNav />
-        <MobileNav />
+        <DesktopNav searchQuery={searchQuery} setSearchQuery={setSearchQuery} searchResults={searchResults} />
+        <MobileNav searchQuery={searchQuery} setSearchQuery={setSearchQuery} searchResults={searchResults} />
         <UserMenu />
       </header>
       <main className="flex-grow overflow-auto">
@@ -35,7 +62,7 @@ const Layout = () => {
   );
 };
 
-const DesktopNav = () => (
+const DesktopNav = ({ searchQuery, setSearchQuery, searchResults }) => (
   <nav className="hidden md:flex md:items-center md:gap-5 lg:gap-6 text-lg font-medium md:text-sm">
     <NavItem
       to="/"
@@ -49,10 +76,26 @@ const DesktopNav = () => (
         {item.title}
       </NavItem>
     ))}
+    <Input
+      type="text"
+      placeholder="Search products..."
+      value={searchQuery}
+      onChange={(e) => setSearchQuery(e.target.value)}
+      className="ml-4"
+    />
+    {searchResults.length > 0 && (
+      <div className="absolute mt-2 w-full bg-white shadow-lg rounded-lg">
+        {searchResults.map((result) => (
+          <div key={result.id} className="p-2 hover:bg-gray-200">
+            {result.name}
+          </div>
+        ))}
+      </div>
+    )}
   </nav>
 );
 
-const MobileNav = () => (
+const MobileNav = ({ searchQuery, setSearchQuery, searchResults }) => (
   <Sheet>
     <SheetTrigger asChild>
       <Button variant="outline" size="icon" className="shrink-0 md:hidden">
@@ -74,6 +117,22 @@ const MobileNav = () => (
             {item.title}
           </NavItem>
         ))}
+        <Input
+          type="text"
+          placeholder="Search products..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="mt-4"
+        />
+        {searchResults.length > 0 && (
+          <div className="absolute mt-2 w-full bg-white shadow-lg rounded-lg">
+            {searchResults.map((result) => (
+              <div key={result.id} className="p-2 hover:bg-gray-200">
+                {result.name}
+              </div>
+            ))}
+          </div>
+        )}
       </nav>
     </SheetContent>
   </Sheet>
