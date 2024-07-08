@@ -9,9 +9,15 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
-import { CircleUser, Menu, Package2 } from "lucide-react";
+import { CircleUser, Menu, Package2, ShoppingCart } from "lucide-react";
 import { NavLink, Outlet } from "react-router-dom";
-import { navItems } from "../App";
+
+const navItems = [
+  { to: "/", title: "Home" },
+  { to: "/products", title: "Products" },
+  { to: "/about", title: "About" },
+  { to: "/contact", title: "Contact" },
+];
 
 const Layout = () => {
   return (
@@ -24,6 +30,7 @@ const Layout = () => {
       <main className="flex-grow overflow-auto">
         <Outlet />
       </main>
+      <Footer />
     </div>
   );
 };
@@ -73,22 +80,28 @@ const MobileNav = () => (
 );
 
 const UserMenu = () => (
-  <DropdownMenu>
-    <DropdownMenuTrigger asChild>
-      <Button variant="secondary" size="icon" className="rounded-full">
-        <CircleUser className="h-5 w-5" />
-        <span className="sr-only">Toggle user menu</span>
-      </Button>
-    </DropdownMenuTrigger>
-    <DropdownMenuContent align="end">
-      <DropdownMenuLabel>My Account</DropdownMenuLabel>
-      <DropdownMenuSeparator />
-      <DropdownMenuItem>Settings</DropdownMenuItem>
-      <DropdownMenuItem>Support</DropdownMenuItem>
-      <DropdownMenuSeparator />
-      <DropdownMenuItem>Logout</DropdownMenuItem>
-    </DropdownMenuContent>
-  </DropdownMenu>
+  <div className="flex items-center gap-4">
+    <Button variant="outline" size="icon" className="rounded-full">
+      <ShoppingCart className="h-5 w-5" />
+      <span className="sr-only">Shopping Cart</span>
+    </Button>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="secondary" size="icon" className="rounded-full">
+          <CircleUser className="h-5 w-5" />
+          <span className="sr-only">Toggle user menu</span>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem>Settings</DropdownMenuItem>
+        <DropdownMenuItem>Support</DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem>Logout</DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  </div>
 );
 
 const NavItem = ({ to, children, className }) => (
@@ -106,6 +119,32 @@ const NavItem = ({ to, children, className }) => (
   >
     {children}
   </NavLink>
+);
+
+const Footer = () => (
+  <footer className="border-t bg-background py-6 text-center">
+    <div className="container mx-auto space-y-4">
+      <div className="flex justify-center space-x-4">
+        <NavLink to="/privacy-policy" className="text-muted-foreground hover:text-foreground">
+          Privacy Policy
+        </NavLink>
+        <NavLink to="/terms-of-service" className="text-muted-foreground hover:text-foreground">
+          Terms of Service
+        </NavLink>
+      </div>
+      <div className="flex justify-center space-x-4">
+        <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground">
+          Facebook
+        </a>
+        <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground">
+          Twitter
+        </a>
+        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground">
+          Instagram
+        </a>
+      </div>
+    </div>
+  </footer>
 );
 
 export default Layout;
